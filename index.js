@@ -1,34 +1,35 @@
-const express = require('express');
-const mongoose = require('mongoose')
-const dotenv = require('dotenv').config()
-const authorRoute = require('./route/author.route')
-const blogRoute = require('./route/blog.route')
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
+const authorRoute = require("./route/author.route");
+const blogRoute = require("./route/blog.route");
+const errorHandler = require("./controller/error.controller");
 
+const app = express();
 
-const app = express()
-
-const CONNECTION_URL = process.env.CONNECTION_URL
-
+const CONNECTION_URL = process.env.CONNECTION_URL;
 
 //Middleware
-app.use(express.json())
+app.use(express.json());
 
-mongoose.connect(CONNECTION_URL)
-.then(()=>console.log("Connected To DB Successfully"))
-.catch((err)=>console.log(err))
-.finally(() => console.log("Finally we made it"))
+mongoose
+  .connect(CONNECTION_URL)
+  .then(() => console.log("Connected To DB Successfully"))
+  .catch((err) => console.log(err))
+  .finally(() => console.log("Finally we made it"));
 
 const callBack = () => {
-    console.log(`Port ${process.env.PORT} is active.`);
-}
+  console.log(`Port ${process.env.PORT} is active.`);
+};
 //Route
-app.use('/authors',authorRoute)
-app.use('/blogs',blogRoute)
+app.use("/authors", authorRoute);
+app.use("/blogs", blogRoute);
 
-app.use('*',(req, res) => {
-    res.send('Not Found')
-  })
+app.use("*", (req, res) => {
+  res.send("Not Found");
+});
 
-app.listen(process.env.PORT,callBack)
+//Error Handling
+app.use(errorHandler);
 
-
+app.listen(process.env.PORT, callBack);
